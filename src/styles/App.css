@@ -1,0 +1,17 @@
+/* Add to existing styles */
+
+.game-instructions {
+  position: absolute;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: rgba(0, 0, 0, 0.5);
+  color: white;
+  padding: 10px 20px;
+  border-radius: 5px;
+  font-size: 16px;
+  text-align: center;
+  pointer-events: none;
+  z-index: 100;
+  transition: opacity 0.3s ease;
+} 

@@ -1,0 +1,38 @@
+{
+  "name": "vibejam2025-server",
+  "version": "0.1.0",
+  "description": "Browser-based FPS game server",
+  "private": true,
+  "main": "dist/index.js",
+  "scripts": {
+    "dev": "ts-node-dev --respawn --transpile-only src/index.ts",
+    "build": "tsc",
+    "start": "node dist/index.js",
+    "lint": "eslint . --ext .ts --report-unused-disable-directives --max-warnings 0",
+    "format": "prettier --write \"src/**/*.ts\"",
+    "test": "jest"
+  },
+  "dependencies": {
+    "cannon-es": "^0.20.0",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.7",
+    "express": "^4.21.2",
+    "mongoose": "^8.2.2",
+    "redis": "^4.6.13",
+    "socket.io": "^4.8.1"
+  },
+  "devDependencies": {
+    "@types/express": "^4.17.21",
+    "@types/jest": "^29.5.12",
+    "@types/node": "^20.17.24",
+    "@typescript-eslint/eslint-plugin": "^7.2.0",
+    "@typescript-eslint/parser": "^7.2.0",
+    "eslint": "^8.57.0",
+    "jest": "^29.7.0",
+    "prettier": "^3.2.5",
+    "ts-jest": "^29.1.2",
+    "ts-node-dev": "^2.0.0",
+    "tsconfig-paths": "^4.2.0",
+    "typescript": "^5.8.2"
+  }
+}
