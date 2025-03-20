@@ -1,102 +1,187 @@
-# VibeJam 2025 - FPS Game Architecture
+# VibeJam 2025 Architecture Overview
 
-## Overview
+This document provides a comprehensive overview of the VibeJam 2025 game architecture, serving as a guide for development and maintenance.
 
-VibeJam 2025 is a high-movement first-person shooter (FPS) game designed to be played in the browser. Inspired by classic games like Quake, it focuses on fast-paced action, fluid movement mechanics, and real-time multiplayer gameplay.
+## High-Level Architecture
 
-## Technology Stack
+VibeJam 2025 is structured with a clear separation between client, server, and shared code:
 
-### Frontend
-- **Three.js** - Core 3D rendering library
-- **React/Next.js** - UI components outside the game environment
-- **TypeScript** - Type-safe development
-- **Cannon.js/Ammo.js** - Physics engine integration
-- **TweenJS** - Animation system
-
-### Backend
-- **Node.js** - Server runtime
-- **Socket.IO** - Real-time bidirectional communication
-- **Express** - Web server framework
-- **Redis** - In-memory data store for game state
-- **MongoDB/PostgreSQL** - Persistent data storage (user profiles, stats)
-
-### DevOps & Infrastructure
-- **Docker** - Containerization
-- **WebRTC** - Peer-to-peer connections
-- **AWS/GCP/Azure** - Cloud hosting
-- **Kubernetes** - Server scaling
-
-## System Components
+```
+vibejam2025/
+├── client/ - Frontend game client
+├── server/ - Backend game server
+└── shared/ - Code shared between client and server
+```
 
 ### Client Architecture
-1. **Rendering Engine**
-   - Three.js-based renderer
-   - Shader system for visual effects
-   - Asset loading and management
 
-2. **Game Engine**
-   - Game loop implementation
-   - Entity component system
-   - Physics integration
-   - Input handling
+The client is built using React for UI and Three.js for 3D rendering, following a component-based architecture:
 
-3. **Networking Layer**
-   - Client-side prediction
-   - Server reconciliation
-   - Entity interpolation
-   - State synchronization
-
-4. **User Interface**
-   - HUD elements (health, ammo, etc.)
-   - Menu system
-   - Lobby and matchmaking interface
+```
+client/src/
+├── game/ - Game engine and systems
+│   ├── core/ - Core engine components
+│   ├── entities/ - Game objects
+│   ├── components/ - Entity behaviors
+│   ├── controls/ - Input handling
+│   ├── rendering/ - Graphics and rendering
+│   ├── ui/ - In-game UI elements
+│   ├── audio/ - Sound system
+│   ├── networking/ - Client-side networking
+│   └── utils/ - Utility functions
+├── ui/ - React UI components
+├── styles/ - CSS styles
+└── assets/ - Game assets
+```
 
 ### Server Architecture
-1. **Game Server**
-   - Authoritative state management
-   - Physics validation
-   - Game logic processing
-   - AI opponent behavior
 
-2. **Matchmaking Service**
-   - Player grouping and matching
-   - Game session creation
-   - Region-based matching
+The server uses Node.js with Express and Socket.IO for real-time communication:
 
-3. **User Service**
-   - Authentication (optional)
-   - User profiles
-   - Progression system
+```
+server/src/
+├── game/ - Game logic
+│   ├── world/ - World management
+│   ├── entities/ - Server-side entities
+│   └── physics/ - Physics simulation
+├── networking/ - Socket handling
+├── matchmaking/ - Player matching
+├── auth/ - Authentication (future)
+├── database/ - Data persistence (future)
+└── utils/ - Utility functions
+```
 
-## Communication Protocol
+### Shared Code
 
-### Game State Synchronization
-- Full state updates for initial connection
-- Delta updates during gameplay
-- Client input validation
-- Anti-cheat measures
+Code shared between client and server to ensure consistency:
 
-### Latency Compensation
-- Client-side prediction
-- Server reconciliation
-- Input buffering
-- Lag compensation techniques
+```
+shared/
+├── types/ - TypeScript interfaces
+├── utils/ - Shared utilities
+└── constants/ - Game constants
+```
 
-## Performance Considerations
-- Optimized asset loading
-- Level-of-detail rendering
-- Object pooling
-- WebWorkers for computation
-- WebAssembly for performance-critical sections
+## Core Systems
 
-## Security Considerations
-- Server-authoritative model
-- Input validation
-- Anti-cheat systems
-- Rate limiting
+### Entity Component System (ECS)
 
-## Scalability Approach
-- Horizontal scaling of game servers
-- Regional deployment
-- Load balancing
-- Session persistence 
+The game uses a component-based architecture where:
+
+1. **Entities** are containers for components (players, weapons, etc.)
+2. **Components** define specific behaviors or data
+3. **Systems** process entities with specific components
+
+This approach provides:
+- Flexibility to compose game objects from reusable parts
+- Better organization of code by responsibility
+- Improved performance through specialized processing
+
+### Example Entity Structure
+
+```typescript
+// Base Entity class
+class Entity {
+  id: string;
+  components: Map<string, Component>;
+  
+  addComponent(component: Component): void;
+  getComponent<T extends Component>(type: string): T;
+  removeComponent(type: string): void;
+  update(delta: number): void;
+}
+
+// Player entity example
+class Player extends Entity {
+  constructor() {
+    super();
+    this.addComponent(new TransformComponent());
+    this.addComponent(new InputComponent());
+    this.addComponent(new CameraComponent());
+    this.addComponent(new PhysicsComponent());
+    this.addComponent(new HealthComponent(100));
+  }
+}
+```
+
+### Game Loop and Update Flow
+
+The game uses a fixed timestep update loop:
+
+1. Process inputs
+2. Update game state
+3. Apply physics
+4. Update networking
+5. Render frame
+
+This ensures consistent simulation regardless of frame rate.
+
+## Networking Architecture
+
+### Client-Server Communication
+
+The game uses Socket.IO for real-time communication with:
+
+1. **Server Authority**: Server maintains the authoritative game state
+2. **Client Prediction**: Clients predict movement locally
+3. **Server Reconciliation**: Server corrects client predictions when needed
+4. **Entity Interpolation**: Smooth movement for network entities
+
+### Network Protocol
+
+```
+Client to Server:
+- Player inputs (movement, actions)
+- Connection management
+- Matchmaking requests
+
+Server to Client:
+- Game state updates
+- Entity positions
+- Game events
+- Matchmaking responses
+```
+
+## Rendering Pipeline
+
+Three.js is used for 3D rendering with a pipeline that includes:
+
+1. Scene management
+2. Material and shader control
+3. Camera handling
+4. Post-processing effects
+5. Optimization techniques (frustum culling, instancing, LOD)
+
+## Current Implementation Status
+
+As of March 2023, the project includes:
+
+- Basic Three.js rendering with a simple 3D environment
+- First-person camera and controls
+- Simple collision detection
+- Basic server with Socket.IO communication
+- Initial matchmaking system
+
+## Future Architecture Plans
+
+The refactoring plan involves:
+
+1. **Phase 1**: Extract core systems from monolithic files
+2. **Phase 2**: Implement entity-component system
+3. **Phase 3**: Improve networking with prediction/reconciliation
+4. **Phase 4**: Add gameplay systems (weapons, health, etc.)
+
+## Best Practices
+
+When contributing to the project, follow these architectural principles:
+
+1. **Separation of Concerns**: Each class should have a single responsibility
+2. **Composition over Inheritance**: Favor component composition
+3. **Type Safety**: Use TypeScript interfaces and types properly
+4. **Testability**: Design systems to be testable in isolation
+5. **Performance Awareness**: Consider performance implications
+6. **Code Documentation**: Document public APIs and complex logic
+
+## Diagrams
+
+(Future: Add system interaction diagrams, data flow diagrams, and state diagrams) 

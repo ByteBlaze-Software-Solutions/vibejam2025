@@ -156,6 +156,43 @@ This document tracks planned tasks, progress, and decision notes for the VibeJam
 - Added game instructions and exit button
 - Updated documentation with how to play guide
 
+## 2023-03-22: Architecture Refactoring Plan
+- Conducted code review of current implementation
+- Identified areas for architectural improvements
+- Created a detailed refactoring plan
+- Updated project documentation with architecture decisions
+- Set up .gitignore to properly exclude node_modules and build files
+
+## Code Architecture Refactoring Tasks
+
+### Phase 1: Extract Core Systems
+- [x] Create a dedicated Renderer class from SimpleGame.tsx
+- [x] Extract Player class for player state and controls
+- [x] Implement World class for environment management
+- [x] Create InputManager for centralized input handling
+- [x] Refactor SimpleGame.tsx to use the new classes
+
+### Phase 2: Entity-Component System
+- [ ] Design and implement base Entity class
+- [ ] Create Component interface for behaviors
+- [ ] Implement core components (Transform, Physics, Collider)
+- [ ] Convert existing objects to use the ECS
+- [ ] Add entity management system
+
+### Phase 3: Networking Integration
+- [ ] Implement NetworkManager class
+- [ ] Create entity synchronization system
+- [ ] Add client-side prediction
+- [ ] Implement server reconciliation
+- [ ] Add network entity interpolation
+
+### Phase 4: Gameplay Systems
+- [ ] Implement weapon system architecture
+- [ ] Add health and damage components
+- [ ] Create visual effects system
+- [ ] Implement game mode framework
+- [ ] Add scoring and match state management
+
 ## Tech Decisions
 - **Physics Engine**: [Decision Pending]
 - **Asset Format**: [Decision Pending]

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { io } from 'socket.io-client';
-import SimpleGame from './game/SimpleGame';
+import RefactoredGame from './game/RefactoredGame';
 import './styles/App.css';
 
 // Create socket connection
@@ -52,7 +52,7 @@ const App: React.FC = () => {
   if (showGame) {
     return (
       <div className="game-wrapper">
-        <SimpleGame />
+        <RefactoredGame />
         <button className="exit-button" onClick={exitGame}>Exit Game</button>
       </div>
     );

@@ -159,3 +159,55 @@ This document records key design decisions made during the development of VibeJa
 - Community features and social integration
 - Map creation and sharing tools
 - Tournament and competitive play support 
+
+## Code Architecture Refactoring (2023-03-21)
+
+**Decision**: Refactor the game architecture to a component-based system with clear separation of concerns.
+
+**Current State Analysis**:
+- SimpleGame.tsx implements all game logic in a single monolithic file
+- Multiple parallel implementations exist (Game.tsx and SimpleGame.tsx)
+- Strong foundation with separation of client, server, and shared code
+- Good directory structure exists but isn't fully utilized
+- Input handling is inconsistent between components
+
+**Refactoring Plan**:
+1. Extract core systems from SimpleGame.tsx into dedicated classes:
+   - Renderer class for Three.js management
+   - Player class for player state and logic
+   - World class for environment and colliders
+   - InputManager for unified input handling
+
+2. Implement a proper entity-component system:
+   - Base Entity class for game objects
+   - Component interface for behaviors
+   - Composition over inheritance for flexibility
+
+3. Establish a clear update flow:
+   - Central game loop with fixed timestep
+   - Predictable state updates
+   - Event-based communication between systems
+
+4. Integrate networking properly:
+   - Dedicated NetworkManager class
+   - Entity synchronization
+   - Prediction and reconciliation
+
+**Rationale**:
+- Improves code maintainability and readability
+- Makes extending functionality easier
+- Reduces duplicate code
+- Creates a more scalable architecture
+- Facilitates team collaboration
+- Enables better testing and debugging
+
+**Alternatives Considered**:
+- Continue with current approach: Rejected due to future maintenance challenges
+- Full rewrite: Rejected in favor of incremental refactoring
+- External game engine: Rejected to maintain full control over implementation
+
+**Implementation Phases**:
+1. Extraction of core systems while maintaining current functionality
+2. Implementation of entity-component system
+3. Refactor of network code and multiplayer
+4. Integration of gameplay systems (weapons, health, etc.) 
